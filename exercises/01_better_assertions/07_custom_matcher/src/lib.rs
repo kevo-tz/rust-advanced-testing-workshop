@@ -1,8 +1,31 @@
+use googletest::description::Description;
 use googletest::matcher::Matcher;
+use googletest::matcher::MatcherResult;
 use http::StatusCode;
 
+struct MyRedirect;
+
+impl Matcher for MyRedirect {
+    type ActualT = StatusCode;
+
+    fn matches(&self, actual: &Self::ActualT) -> MatcherResult {
+        if actual.is_redirection() {
+            MatcherResult::Match
+        } else {
+            MatcherResult::NoMatch
+        }
+    }
+
+    fn describe(&self, matcher_result: MatcherResult) -> Description {
+        match matcher_result {
+            MatcherResult::Match => "is a redirection status code".into(),
+            MatcherResult::NoMatch => "isn't a redirection status code".into(),
+        }
+    }
+}
+
 pub fn is_redirect() -> impl Matcher<ActualT = StatusCode> {
-    todo!()
+    MyRedirect
 }
 
 #[cfg(test)]
