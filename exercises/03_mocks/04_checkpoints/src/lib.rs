@@ -60,6 +60,9 @@ mod tests {
             });
         let repository = Repository::new(&mock_client, caller_id);
 
+        // verify
+        mock_client.checkpoint();
+
         mock_client
             .expect_get_permissions()
             .withf(move |id| *id == caller_id)
@@ -69,5 +72,6 @@ mod tests {
 
         // Act
         repository.get(&mock_client, caller_id, entity_id);
+
     }
 }
