@@ -49,31 +49,45 @@ mod tests {
     use wiremock::matchers::{method, path};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
+    async fn repository_test_helper(
+        mock_server: &MockServer,
+        caller_id: usize,
+    ) -> super::Repository {
+        let expected_path = format!("/auth/{caller_id}");
+        let mock = Mock::given(method("GET"))
+            .and(path(&expected_path))
+            .respond_with(ResponseTemplate::new(200));
+        let _mock_guard = mock_server.register_as_scoped(mock).await;
+        let base_url = Url::parse(&mock_server.uri()).unwrap();
+        super::Repository::new(base_url, caller_id).await
+    }
+
     #[googletest::test]
     #[tokio::test]
     async fn permissions_can_be_revoked() {
         // Arrange
         let server = MockServer::start().await;
         let caller_id = 1;
-        let expected_path = format!("/auth/{caller_id}");
-        server
-            .register(
-                Mock::given(method("GET"))
-                    .and(path(&expected_path))
-                    .respond_with(ResponseTemplate::new(200)),
-            )
-            .await;
-        server
-            .register(
-                Mock::given(method("GET"))
-                    .and(path(&expected_path))
-                    .respond_with(ResponseTemplate::new(403)),
-            )
-            .await;
+        // let expected_path = format!("/auth/{caller_id}");
+        // server
+        //     .register(
+        //         Mock::given(method("GET"))
+        //             .and(path(&expected_path))
+        //             .respond_with(ResponseTemplate::new(200)),
+        //     )
+        //     .await;
+        // server
+        //     .register(
+        //         Mock::given(method("GET"))
+        //             .and(path(&expected_path))
+        //             .respond_with(ResponseTemplate::new(403)),
+        //     )
+        //     .await;
 
-        let base_url = Url::parse(&server.uri()).unwrap();
+        // let base_url = Url::parse(&server.uri()).unwrap();
 
-        let repository = super::Repository::new(base_url.clone(), caller_id).await;
+        // let repository = super::Repository::new(base_url.clone(), caller_id).await;
+        let repository = repository_test_helper(&server, caller_id).await;
 
         // Act
         let outcome = repository.get(2).await;
