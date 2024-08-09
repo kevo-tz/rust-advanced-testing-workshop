@@ -1,3 +1,5 @@
+use std::os::unix::raw::ino_t;
+
 use proc_macro::TokenStream;
 use quote::{quote, ToTokens};
 use syn::parse::{Parse, ParseStream};
@@ -15,7 +17,13 @@ pub fn test(args: TokenStream, input: TokenStream) -> TokenStream {
         sig,
         block,
     } = test_fn;
-    let mut output = todo!("Use quote");
+    let mut output = quote! {
+        #vis #sig {
+            #(#before();)*
+            #block
+            #(#after();)*
+        }
+    };
 
     if !attrs.iter().any(|a| is_test_attribute(a)) {
         output = {
@@ -43,7 +51,23 @@ struct Args {
 
 impl RawArgs {
     pub fn validate(self) -> Args {
-        todo!()
+        let mut before = Vec::new();
+        let mut after = Vec::new();
+        for RawHook {
+            type_,
+            equals: _,
+            fn_path,
+        } in self.vars
+        {
+            if type_.to_string() == "before" {
+                before.push(fn_path);
+            } else if type_.to_string() == "after" {
+                after.push(fn_path);
+            } else {
+                panic!("Unexpected hook type: {}", type_);
+            }
+        }
+        Args { before, after }
     }
 }
 
@@ -64,7 +88,14 @@ impl Parse for RawArgs {
 
 impl Parse for RawHook {
     fn parse(input: ParseStream) -> syn::Result<Self> {
-        todo!()
+        let type_ = input.parse()?;
+        let equals = input.parse()?;
+        let fn_path = input.parse()?;
+        Ok(RawHook {
+            type_,
+            equals,
+            fn_path,
+        })
     }
 }
 
