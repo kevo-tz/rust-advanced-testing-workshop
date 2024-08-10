@@ -7,9 +7,9 @@
         "vscode": {
             "extensions": [
                 "rust-lang.rust-analyzer",
-                "serayuzgur.crates",
                 "redhat.vscode-yaml",
-                "usernamehw.errorlens"
+                "usernamehw.errorlens",
+                "fill-labs.dependi"
             ]
         }
     }
