@@ -143,7 +143,7 @@ fn run_tests() -> Result<HashMap<String, TestOutcome>, anyhow::Error> {
             .expect("Failed to compile regex")
     });
     static GOOGLETEST_PANIC: Lazy<regex::Regex> = Lazy::new(|| {
-        regex::Regex::new(r#"\s*at [a-zA-Z0-9\-\\\_\/\.]+\:(?<row>\d+)\:(?<column>\d+)"#)
+        regex::Regex::new(r#"\s*at [a-zA-Z0-9\-\\\_\/\.\:]+\:(?<row>\d+)\:(?<column>\d+)"#)
             .expect("Failed to compile regex")
     });
 
@@ -190,6 +190,7 @@ fn run_tests() -> Result<HashMap<String, TestOutcome>, anyhow::Error> {
         let test_outcome = match libtest_msg.event_data {
             TestEventData::Started => continue,
             TestEventData::Failed { stdout } => {
+                let stdout = stdout.unwrap_or_default();
                 let mut clean_stdout = Vec::new();
                 let mut found_non_empty_line = false;
                 for line in stdout.lines() {
@@ -268,7 +269,7 @@ struct LibtestMessage {
 #[serde(rename_all = "snake_case")]
 enum TestEventData {
     Started,
-    Failed { stdout: String },
+    Failed { stdout: Option<String> },
     Ok,
     Timeout,
 }

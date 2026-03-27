@@ -25,7 +25,7 @@ bring this course to your company, please [get in touch](https://mainmatter.com/
 You can also take the course on your own, but we recommend you find a friend or
 a mentor to help you along the way should you get stuck. You can
 also find solutions to all exercises in the
-[`solutions` branch of the GitHub repository](https://github.com/mainmatter/rust-python-interoperability/tree/solutions).
+[`solutions` branch of the GitHub repository](https://github.com/mainmatter/rust-advanced-testing-workshop/tree/solutions).
 
 ## Prerequisites
 
@@ -44,14 +44,6 @@ You'll also need the `nightly` toolchain, so make sure to install it:
 rustup toolchain install nightly
 ```
 
-You also need to install `ctr` (**C**heck **T**est **R**esults), a little tool that will be invoked
-to verify the outcomes of your tests:
-
-```bash
-# Install `ctr` from the top-level folder of the repository
-cargo install --path ctr
-```
-
 Don't start the course until you have these tools installed and working.
 
 ## Structure
@@ -60,7 +52,7 @@ On the left side of the screen, you can see that the course is divided into sect
 To verify your understanding, each section is paired with an exercise that you need to solve.
 
 You can find the exercises in the
-[companion GitHub repository](https://github.com/mainmatter/rust-python-interoperability).\
+[companion GitHub repository](https://github.com/mainmatter/rust-advanced-testing-workshop).\
 Before starting the course, make sure to clone the repository to your local machine:
 
 ```bash
@@ -86,15 +78,10 @@ automatically verify your solution.
 
 ### `wr`, the workshop runner
 
-To verify your solutions, we've provided a tool that will guide you through the course.
-It is the `wr` CLI (short for "workshop runner").
-Install it with:
+To verify your solutions, we've also provided a tool to guide you through the course: the `wr` CLI, short for "workshop runner".
+Install `wr` by following the instructions on [its website](https://mainmatter.github.io/rust-workshop-runner/).
 
-```bash
-cargo install --locked workshop-runner
-```
-
-In a new terminal, navigate back to the top-level folder of the repository.
+Once you have `wr` installed, open a new terminal and navigate to the top-level folder of the repository.
 Run the `wr` command to start the course:
 
 ```bash
